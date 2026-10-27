@@ -9,29 +9,15 @@ permissions:
   contents: read
 
 jobs:
-  shared:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 24.15
-      - run: node scripts/check-shared.mjs
-  example:
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        example: [eve-agent, eve-agent-agentmail, crm-direct]
-    defaults:
-      run:
-        working-directory: ${{ matrix.example }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24.15
-          cache: npm
-          cache-dependency-path: ${{ matrix.example }}/package-lock.json
+      # Each example installs on its own, exactly as someone copying it would.
+      - run: for example in eve-agent eve-agent-agentmail no-agent; do (cd "$example" && npm ci); done
+      - run: node --check no-agent/decide.mjs
       - run: npm ci
       - run: npm test
