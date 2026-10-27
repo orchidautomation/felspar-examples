@@ -1,0 +1,14 @@
+Ticket HC-1001: "Our dashboard has shown error 503 since this morning and our whole team is blocked."
+Account record: "Plan: Enterprise (annual contract)"
+
+Ticket HC-1002: "We were charged twice this month, please refund one payment."
+Account record: "Plan: Business (monthly)"
+
+Ticket HC-1003: "How do I add a teammate to my workspace?"
+Account record: "Plan: Starter (trial)"
+
+Ticket HC-1004: "I lost my phone and cannot get past two-factor sign-in."
+Account record: "Plan: Enterprise (annual contract)"
+
+Ticket HC-1005: "Please delete all data you hold about me and my company under GDPR."
+Account record: "Plan: Business (yearly)"
