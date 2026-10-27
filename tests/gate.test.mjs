@@ -9,7 +9,7 @@ import { felsparDecisionEvents, felsparGate } from "@felspar/sdk/eve";
 process.env.FELSPAR_MCP_URL = "https://felspar.invalid/mcp";
 async function gateWith(environment, tag) {
   Object.assign(process.env, environment);
-  const { gate } = await import(`./agent/lib/felspar-gate.ts?${tag}`);
+  const { gate } = await import(`../eve-agent-agentmail/agent/lib/felspar-gate.ts?${tag}`);
   return gate;
 }
 const company = await gateWith(

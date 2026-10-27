@@ -1,0 +1,11 @@
+{
+  "name": "felspar-examples",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node scripts/check-shared.mjs && node --test 'tests/*.test.mjs'"
+  },
+  "devDependencies": {
+    "@felspar/sdk": "^0.3.0"
+  }
+}

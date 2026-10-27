@@ -1,0 +1,15 @@
+{
+  "name": "felspar-no-agent",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "decide": "node --env-file=.env.local decide.mjs"
+  },
+  "dependencies": {
+    "@felspar/sdk": "^0.3.0"
+  }
+}

@@ -1,6 +1,6 @@
 ---
 name: writing
-description: Use this skill whenever you write a message for a decided case, such as a support reply, an email to a company or any other output a Felspar decision lists under outputs. Load it after get_job_decision and before you write, and again before you rewrite text that check_writing or check_output sent back.
+description: Use this skill whenever you write a message for a decided case, such as a support reply, an email to a company or any other output a Felspar decision lists under outputs. Load it after get_job_decision and before you write, and again before you rewrite text that check_output sent back.
 metadata:
   version: "0.1.0"
 ---
@@ -32,10 +32,6 @@ Not this: a one-line notice ("Your ticket has been escalated per your plan."). T
 
 No promise, date, amount, discount, exception or policy that isn't in the evidence, the decision or the context. If the person asked for something Felspar didn't decide, say who will answer it (from `nextStep`); don't answer it yourself. Don't claim you read, saw or did something the evidence doesn't show.
 
-## Check, then check with Felspar
+## Check with Felspar
 
-1. Call `check_writing` with the full `text` and the output's `id` as `output`. It checks this team's house style: paragraph count, length, questions, em dashes, links and unfilled placeholders. Fix every finding and check again until it passes.
-2. Then check with Felspar (`check_output`) and fix what it flags. Felspar's checks are the company's policy; style never overrides them.
-3. If Felspar sends it back, fix exactly what it flags, run `check_writing` again, then `check_output` again. Felspar's limit of 3 checks still applies.
-
-The text you show or draft is exactly the text both checks passed last.
+Check the text with `check_output` and fix exactly what it flags. Felspar's checks are the company's policy; style never overrides them. The text you show is exactly the text Felspar passed last.
