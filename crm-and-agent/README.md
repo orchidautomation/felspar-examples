@@ -114,7 +114,7 @@ Both consumers send the same facts: what the CRM record and the company's site s
 
 ## Change the policy
 
-Edit the threshold in the Google Doc, from 500 to 750 employees. Before anyone approves the change, Felspar's plugin shows which saved decisions it would flip: here, B, with 600 employees. After the new release, `npm run decide` gives the new decision in both consumers at once, with no change to either. `npm run verify` still reproduces the old receipts on the release that made them.
+Edit the threshold in the Google Doc, from 500 to 750 employees. Before anyone approves the change, Felspar's plugin shows which saved decisions it would flip: here, B, with 600 employees. After the new release, run `npm run verify` first: the saved receipts still reproduce on the release that made them. Then `npm run decide` gives the new decision in both consumers at once, with no change to either. (`decide` overwrites `receipts.json`, so verify before you decide again.)
 
 ## Run it again
 
