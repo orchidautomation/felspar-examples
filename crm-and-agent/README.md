@@ -23,6 +23,37 @@ E  not-qualified  reproduced  on release-977472089907…
 
 D has no employee count, and F's sources disagree (450 and 900). Felspar doesn't guess either way: it holds them for sales operations, as the policy says.
 
+## What Felspar decides, step by step
+
+This is the released policy as Felspar runs it. Neither consumer has any of this logic: each sends facts, and Felspar walks the same rules for both.
+
+```mermaid
+flowchart TD
+  facts["Facts in: the employee count and the state of the AI work,<br/>each in its source's own words"]
+  read{"Felspar reads each excerpt:<br/>an allowed source? under 90 days old? a clear reading?"}
+  small{"Fewer than 500 employees?"}
+  plan{"AI work only planned,<br/>or some other AI activity?"}
+  both{"At least 500 employees<br/>and AI work in progress?"}
+  no["<b>not-qualified</b><br/>Newsletter nurture, no direct contact"]
+  yes["<b>qualified</b><br/>AE task in the CRM, outreach within two business days"]
+  open["<b>Not decided yet</b><br/>Next step: research it once more"]
+  esc["<b>held: sales-ops-review</b><br/>No contact before review"]
+
+  facts --> read
+  read -- "usable" --> small
+  read -- "not usable: left out" --> small
+  small -- "yes" --> no
+  small -- "no, or not known" --> plan
+  plan -- "yes" --> no
+  plan -- "no, or not known" --> both
+  both -- "yes" --> yes
+  both -- "not known: missing,<br/>or sources disagree" --> open
+  open -- "first try" --> facts
+  open -- "second try" --> esc
+```
+
+"Not known" is never a guess: an employee count with sources on both sides of 500 (F's 450 and 900) is not known, and neither is a fact nobody found (D). Each decision's receipt names the rule that decided it, quoted from the policy.
+
 ## Run it
 
 1. Copy [`policy.md`](policy.md) into a Google Doc and connect it in [Felspar](https://app.felspar.ai). Draft its pack with Felspar's plugin, then approve and release it.
