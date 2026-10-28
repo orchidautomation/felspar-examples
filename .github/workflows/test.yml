@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: 24.15
       # Each example installs on its own, exactly as someone copying it would.
-      - run: for example in eve-agent eve-agent-agentmail no-agent; do (cd "$example" && npm ci); done
-      - run: node --check no-agent/decide.mjs
+      - run: for example in eve-agent eve-agent-agentmail no-agent crm-and-agent; do (cd "$example" && npm ci); done
+      - run: for script in no-agent/decide.mjs crm-and-agent/decide.mjs crm-and-agent/verify.mjs crm-and-agent/cases.mjs; do node --check "$script"; done
       - run: npm ci
       - run: npm test
