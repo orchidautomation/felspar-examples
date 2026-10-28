@@ -32,13 +32,12 @@ No Gateway key? In `npm run dev`, type `/login` and use a ChatGPT subscription i
 | File | What it does |
 | --- | --- |
 | `agent/connections/felspar.ts` | Connects to Felspar in two lines with [`@felspar/sdk`](https://www.npmjs.com/package/@felspar/sdk) |
-| `agent/skills/felspar/SKILL.md` | How to run any Felspar job: ask what it needs, send exact evidence, act on the decision |
 | `agent/instructions.md` | Standing rules: Felspar decides, evidence is quoted, never act on its own |
 | `agent/skills/writing/SKILL.md` | How to write a reply a person is glad to read, when the decision asks for one |
 | `agent/connections/exa.ts`, `agent/tools/` | Web search and page reading, the clock |
 | `agent/agent.ts` | The model |
 
-Nothing in it is specific to one job. The agent runs every job its key is registered for and learns what each needs from Felspar.
+Nothing in it is specific to one job, and there is no Felspar prompt to maintain: the agent runs every job its key is registered for, and Felspar's tools tell it what each needs and what to do next.
 
 ## Next
 

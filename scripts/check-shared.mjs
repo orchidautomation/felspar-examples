@@ -7,7 +7,6 @@ const shared = [
   "agent/agent.ts",
   "agent/connections/exa.ts",
   "agent/connections/felspar.ts",
-  "agent/skills/felspar/SKILL.md",
   "agent/skills/writing/SKILL.md",
   "agent/tools/current_time.ts",
   "agent/tools/web_fetch.ts",
