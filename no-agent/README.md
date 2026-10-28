@@ -13,7 +13,7 @@ verified:  reproduced
 
 ## Run it
 
-1. In [Felspar](https://app.felspar.ai) → Workspace → Agents, register an agent for a released job and create its key.
+1. In [Felspar](https://app.felspar.ai) → Workspace → Company agents, register an agent for a released job and create its key.
 2. `npm install` (Node.js 24.15 or later).
 3. `cp .env.example .env.local` and paste in the key.
 4. Set `job` and `facts` in `decide.mjs` to your job's questions, then `npm run decide`.
