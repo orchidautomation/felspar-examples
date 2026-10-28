@@ -11,7 +11,7 @@
     "serve": "eve dev --no-ui --no-default-extensions --port 2000"
   },
   "dependencies": {
-    "@felspar/sdk": "^0.3.0",
+    "@felspar/sdk": "^0.4.0",
     "eve": "0.71.0"
   }
 }

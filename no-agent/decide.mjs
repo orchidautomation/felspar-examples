@@ -22,9 +22,7 @@ const facts = {
 };
 
 // The release Felspar runs this job on for your key.
-const brief = await fetch(`https://api.felspar.ai/v0/jobs/${job}/brief`, {
-  headers: { Authorization: `Bearer ${agentKey}` },
-}).then((response) => response.json());
+const brief = await felspar.describeCurrentJob(job);
 
 const { result } = await felspar.resolveFacts(brief.release.releaseId, {
   jobId: job,
