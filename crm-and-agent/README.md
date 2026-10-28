@@ -67,8 +67,8 @@ flowchart TD
   end
   subgraph rules["The policy's rules, in order"]
     r1["<b>too-small</b><br/>fewer than 500 employees?"]
-    r2["<b>not-in-progress</b><br/>AI only planned, or other AI activity?"]
-    r3["<b>qualified</b><br/>at least 500 and AI in progress?"]
+    r2["<b>qualified</b><br/>at least 500 and AI in progress?"]
+    r3["<b>not-in-progress</b><br/>AI only planned, or other AI activity?"]
   end
   retry["Not decided yet<br/>next step: research it once more"]
   no["<b>not-qualified</b><br/>newsletter nurture, no direct contact"]
@@ -78,10 +78,10 @@ flowchart TD
   known --> r1
   r1 -- "yes" --> no
   r1 -- "no / not known" --> r2
-  r2 -- "yes" --> no
+  r2 -- "yes" --> yes
   r2 -- "no / not known" --> r3
-  r3 -- "yes" --> yes
-  r3 -- "not known" --> retry
+  r3 -- "yes" --> no
+  r3 -- "no / not known" --> retry
   retry -- "1st try: better evidence" --> facts
   retry -- "2nd try still open" --> held
   classDef q fill:#1f6f43,stroke:#1f6f43,color:#fff
