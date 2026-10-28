@@ -23,36 +23,76 @@ E  not-qualified  reproduced  on release-977472089907…
 
 D has no employee count, and F's sources disagree (450 and 900). Felspar doesn't guess either way: it holds them for sales operations, as the policy says.
 
-## What Felspar decides, step by step
+## How it works
 
-This is the released policy as Felspar runs it. Neither consumer has any of this logic: each sends facts, and Felspar walks the same rules for both.
+The policy is written once, released by a person, and every system that qualifies a company asks Felspar for the decision. When the policy changes, they all follow.
 
 ```mermaid
 flowchart TD
-  facts["Facts in: the employee count and the state of the AI work,<br/>each in its source's own words"]
-  read{"Felspar reads each excerpt:<br/>an allowed source? under 90 days old? a clear reading?"}
-  small{"Fewer than 500 employees?"}
-  plan{"AI work only planned,<br/>or some other AI activity?"}
-  both{"At least 500 employees<br/>and AI work in progress?"}
-  no["<b>not-qualified</b><br/>Newsletter nurture, no direct contact"]
-  yes["<b>qualified</b><br/>AE task in the CRM, outreach within two business days"]
-  open["<b>Not decided yet</b><br/>Next step: research it once more"]
-  esc["<b>held: sales-ops-review</b><br/>No contact before review"]
-
-  facts --> read
-  read -- "usable" --> small
-  read -- "not usable: left out" --> small
-  small -- "yes" --> no
-  small -- "no, or not known" --> plan
-  plan -- "yes" --> no
-  plan -- "no, or not known" --> both
-  both -- "yes" --> yes
-  both -- "not known: missing,<br/>or sources disagree" --> open
-  open -- "first try" --> facts
-  open -- "second try" --> esc
+  doc["<b>① The policy</b><br/>a Google Doc, in plain English"]
+  pack["<b>② Felspar drafts the pack and tests it</b><br/>every rule quoted from the doc<br/>7 test cases, edges at 499 and 500"]
+  rel[("<b>③ A person approves and releases it</b><br/>release v1: versioned, can't change")]
+  crm["CRM workflow<br/>REST, no model"]
+  agent["Research agent<br/>Felspar's MCP tools"]
+  dec{{"<b>④ Felspar decides</b><br/>same rules, same release, for everyone"}}
+  rec["<b>⑤ A receipt for every decision</b><br/>outcome · rule · quote · evidence<br/>re-run any time: reproduced"]
+  chg["<b>⑥ The policy changes</b><br/>edit 500 → 750 employees<br/>Felspar shows Bluecrest would flip before anyone approves<br/>then release v2"]
+  doc --> pack --> rel --> dec
+  crm -- "facts" --> dec
+  agent -- "facts" --> dec
+  dec -- "the same decision" --> crm
+  dec -- "the same decision" --> agent
+  dec --> rec
+  doc -. "someone edits it" .-> chg
+  chg -. "both systems follow, no code change" .-> dec
+  classDef step fill:#eef2ff,stroke:#4f46e5,color:#111
+  classDef core fill:#1f3a68,stroke:#1f3a68,color:#fff
+  classDef sys fill:#f4f4f5,stroke:#a1a1aa,color:#111
+  class doc,pack,rec,chg step
+  class rel,dec core
+  class crm,agent sys
 ```
 
-"Not known" is never a guess: an employee count with sources on both sides of 500 (F's 450 and 900) is not known, and neither is a fact nobody found (D). Each decision's receipt names the rule that decided it, quoted from the policy.
+### How one decision is made
+
+Neither system has any of this logic. Each sends facts; Felspar reads them and walks the released rules.
+
+```mermaid
+flowchart TD
+  facts(["Facts in: each source's own words,<br/>where they came from, and when"])
+  subgraph read["Felspar reads the evidence"]
+    checks["Each excerpt is checked:<br/>• an allowed source: CRM record, company site, LinkedIn<br/>• observed in the last 90 days<br/>• a clear reading: an exact number, or one answer at 0.8+<br/>An excerpt that fails is left out."]
+    known["<b>employees</b>: a number, or not known<br/><b>AI work</b>: in progress · planned · other, or not known<br/>Two counts on both sides of 500 = not known"]
+    checks --> known
+  end
+  subgraph rules["The policy's rules, in order"]
+    r1["<b>too-small</b><br/>fewer than 500 employees?"]
+    r2["<b>not-in-progress</b><br/>AI only planned, or other AI activity?"]
+    r3["<b>qualified</b><br/>at least 500 and AI in progress?"]
+  end
+  retry["Not decided yet<br/>next step: research it once more"]
+  no["<b>not-qualified</b><br/>newsletter nurture, no direct contact"]
+  yes["<b>qualified</b><br/>AE task in the CRM, outreach in 2 business days"]
+  held["<b>held: sales-ops-review</b><br/>no contact before review"]
+  facts --> checks
+  known --> r1
+  r1 -- "yes" --> no
+  r1 -- "no / not known" --> r2
+  r2 -- "yes" --> no
+  r2 -- "no / not known" --> r3
+  r3 -- "yes" --> yes
+  r3 -- "not known" --> retry
+  retry -- "1st try: better evidence" --> facts
+  retry -- "2nd try still open" --> held
+  classDef q fill:#1f6f43,stroke:#1f6f43,color:#fff
+  classDef n fill:#7a2e2e,stroke:#7a2e2e,color:#fff
+  classDef h fill:#8a5a00,stroke:#8a5a00,color:#fff
+  class yes q
+  class no n
+  class held h
+```
+
+"Not known" is never a guess: D is held because nobody found its employee count, and F because its sources disagree. Each receipt names the rule that decided it, quoted from the policy.
 
 ## Run it
 
