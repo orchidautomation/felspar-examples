@@ -227,6 +227,9 @@ async function start(resume = false) {
         // Override ambient preferences for every start, including cold resume.
         // This is per-process; never change the machine's Eve configuration.
         EVE_TELEMETRY_DISABLED: "1",
+        // Replace inherited preloads so incidental gateway/catalog fetches
+        // stay local too. Other Node network APIs are outside this guard.
+        NODE_OPTIONS: `--import=${new URL("./eve-proof-fetch.mjs", import.meta.url).href}`,
       },
     },
   );
