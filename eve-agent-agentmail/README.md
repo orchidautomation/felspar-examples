@@ -30,3 +30,20 @@ agent ─ get_job_decision ─► outcome: billing-team   (lists the output cust
 | `agent/hooks/felspar-decisions.ts` | Records each Felspar decision and output check so the gate can check them |
 
 The rules come from the released pack, not from this code: change the policy, release it, and the gate follows. [How the gate works](https://docs.felspar.ai/guides/pre-action-gate).
+
+## Candidate Eve adapter update
+
+This branch's durable-state wiring needs the unreleased SDK update; the proposed minimum is `@felspar/sdk 0.5.0`. The dependency range and lockfile still describe the published `0.4.x` example. Update both in the separate release handoff before merging or distributing this example. Eve remains pinned to `0.71.0`.
+
+Use the same host-controlled state handle in the hook and approval policy. Keep it private to this tenant and session. Each subagent needs its own decision and output check. Resume local sessions with `eve dev --resume`; missing hook deliveries require fresh evidence. Do not overwrite the hook's `*` handler.
+
+To run the deterministic runtime proof against a candidate SDK, install exact Eve and AI SDK versions in a scratch directory, then run from the repository root:
+
+```sh
+npm install --prefix /tmp/eve-proof --no-audit --no-fund eve@0.71.0 ai@7.0.163
+npm run test:eve -- /tmp/eve-proof /path/to/felspar/packages/sdk/src
+```
+
+The probe uses local mock MCP servers and a scripted model. It checks the action executor count for decisions, output checks, negative cases, child sessions and cold resume. No real inbox or model API is used. Repeat with Eve `0.83.0` or `1.0.0-rc.6` in a separate scratch directory.
+
+The example's own `npm test` runs this proof using its installed Eve and SDK. The existing SDK examples check invokes that script, and this repository's CI runs it after installation.

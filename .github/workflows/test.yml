@@ -21,3 +21,4 @@ jobs:
       - run: for script in no-agent/decide.mjs crm-and-agent/decide.mjs crm-and-agent/verify.mjs crm-and-agent/cases.mjs; do node --check "$script"; done
       - run: npm ci
       - run: npm test
+      - run: npm run test --prefix eve-agent-agentmail
