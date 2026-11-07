@@ -28,6 +28,8 @@ Count the company's employees as its own website, its LinkedIn page or the CRM r
 
 What is the state of the company's AI work?
 
+AI-work evidence is required only for companies with at least 500 employees. A known count below 500 decides not qualified without AI-work evidence.
+
 In progress: the company is building, piloting or running an AI project now. For example, "we launched our AI assistant to all customers" or "our pilot of AI-assisted claims review is live in two regions".
 
 Planned: the company says it will start an AI project in a future quarter, or is hiring to start one. A plan is not progress. For example, "we plan to pilot generative AI next year" or "we are hiring our first machine learning engineer".
@@ -46,7 +48,7 @@ Not qualified: add the company to the newsletter nurture and do not contact it d
 
 ## When the evidence does not decide
 
-If the employee count or the state of the AI work is missing, research it once more. If it is still missing, or two sources give employee counts on both sides of the threshold, sales operations reviews the company before anyone contacts it.
+If the employee count, or the state of AI work for a company with at least 500 employees, is missing, research it once more. If it is still missing, or two sources give employee counts on both sides of the threshold, sales operations reviews the company before anyone contacts it.
 
 ## Companies
 
