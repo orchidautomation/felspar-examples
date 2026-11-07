@@ -46,4 +46,6 @@ npm run test:eve -- /tmp/eve-proof /path/to/felspar/packages/sdk/src
 
 The probe uses local mock MCP servers and a scripted model. It checks the action executor count for decisions, output checks, negative cases, child sessions and cold resume. No real inbox or model API is used. Repeat with Eve `0.83.0` or `1.0.0-rc.6` in a separate scratch directory.
 
+Each spawned Eve process explicitly disables CLI telemetry, including after cold restart. This changes only the child's environment, not machine preferences. The runner inherits other host configuration and is not a general network sandbox.
+
 The example's own `npm test` runs this proof using its installed Eve and SDK. The existing SDK examples check invokes that script, and this repository's CI runs it after installation.

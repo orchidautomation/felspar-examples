@@ -220,9 +220,14 @@ async function start(resume = false) {
       cwd: project,
       detached: true,
       stdio: ["ignore", "pipe", "pipe"],
-      env: Object.fromEntries(
-        Object.entries(process.env).filter(([name]) => !/KEY|TOKEN|SECRET|PASSWORD/i.test(name)),
-      ),
+      env: {
+        ...Object.fromEntries(
+          Object.entries(process.env).filter(([name]) => !/KEY|TOKEN|SECRET|PASSWORD/i.test(name)),
+        ),
+        // Override ambient preferences for every start, including cold resume.
+        // This is per-process; never change the machine's Eve configuration.
+        EVE_TELEMETRY_DISABLED: "1",
+      },
     },
   );
   await new Promise((resolve, reject) => {
