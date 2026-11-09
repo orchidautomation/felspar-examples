@@ -1,0 +1,17 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^(Bash|apply_patch)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$(git rev-parse --show-toplevel)/.claude/hooks/felspar-hook.mjs\" || { echo 'Felspar check unavailable' >&2; exit 2; }",
+            "timeout": 30,
+            "statusMessage": "Checking with Felspar"
+          }
+        ]
+      }
+    ]
+  }
+}

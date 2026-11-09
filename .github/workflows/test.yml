@@ -18,10 +18,11 @@ jobs:
           node-version: 24.15
       # Each example installs on its own, exactly as someone copying it would.
       - run: for example in eve-agent eve-agent-agentmail no-agent crm-and-agent; do (cd "$example" && npm ci); done
-      - run: for script in no-agent/decide.mjs crm-and-agent/decide.mjs crm-and-agent/verify.mjs crm-and-agent/cases.mjs; do node --check "$script"; done
+      - run: for script in no-agent/decide.mjs crm-and-agent/decide.mjs crm-and-agent/verify.mjs crm-and-agent/cases.mjs claude-code-hooks/.claude/hooks/felspar-hook.mjs claude-code-hooks/.claude/hooks/change-record.mjs claude-code-hooks/dry-run.mjs; do node --check "$script"; done
       - run: npm ci
       - run: npm test
       - run: npm run test --prefix eve-agent-agentmail
+      - run: npm test --prefix claude-code-hooks
       # The Python example installs its pinned package on its own, the same way.
       - uses: actions/setup-python@v5
         with:
