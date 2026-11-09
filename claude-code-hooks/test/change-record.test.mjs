@@ -21,12 +21,14 @@ function issue({ state = st("In Progress", "started"), labels = ["production"], 
 }
 const ev = (minute, actor, extra) => ({ createdAt: at(minute), actor, fromState: null, toState: null, updatedDescription: false, addedLabels: [], removedLabels: [], ...extra });
 let reply;
+let last;
 globalThis.fetch = async () => ({ ok: true, json: async () => reply });
 const { changeRecord } = await import("../.claude/hooks/change-record.mjs");
 async function read(data, approval) {
   if (approval) process.env.FELSPAR_LINEAR_APPROVAL = approval; else delete process.env.FELSPAR_LINEAR_APPROVAL;
   reply = data;
   const out = await changeRecord({ cwd: repo });
+  last = out;
   return out[0]?.text ?? null;
 }
 
@@ -35,7 +37,8 @@ test("status: approved by someone else, then moved forward", async () => {
   assert.match(text, /status: approved\./);
   assert.match(text, /Requested by Dana Lee/);
   assert.match(text, /Approved by Priya Shah .* by moving the issue to Approved/);
-  assert.match(text, /Valid until 2026-12-31/);
+  assert.deepEqual(last[1], { kind: "change-expiry", id: "TDW-412", text: "2026-12-31" });
+  assert.doesNotMatch(text, /2026-12-31/);
 });
 test("status: self-approval is reported as such, for the policy to judge", async () => {
   const text = await read({ data: { issue: issue({ history: [ev(1, dana, { toState: st("Approved", "unstarted") })] }) } });
@@ -83,6 +86,10 @@ test("status: the approver's own edit merged into the approval entry still count
 test("status: an approval step merged away reads as not approved, never approved", async () => {
   const text = await read({ data: { issue: issue({ history: [ev(1, priya, { fromState: st("Todo", "unstarted"), toState: st("In Progress", "started") })] }) } });
   assert.match(text, /status: not approved\./);
+});
+test("no due date: no change-expiry is sent", async () => {
+  await read({ data: { issue: issue({ dueDate: null, history: [ev(1, priya, { toState: st("Approved", "unstarted") })] }) } });
+  assert.equal(last.length, 1);
 });
 test("no such issue: no record", async () => {
   assert.equal(await read({ errors: [{ message: "Entity not found: Issue" }] }), null);

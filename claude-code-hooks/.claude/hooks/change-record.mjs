@@ -33,7 +33,8 @@
 // Progress is recorded as Todo → In Progress); that reads as not approved,
 // never the reverse. A label doesn't have this problem.
 //   - scope:     the title, labels and description as written.
-//   - valid until: the issue's due date.
+//   - valid until: the issue's due date, sent on its own as change-expiry
+//                (YYYY-MM-DD), never inside the record's text.
 //
 // Other settings:
 //   LINEAR_API_KEY   a read-only Linear key, kept where the agent's tools can't
@@ -177,7 +178,9 @@ export async function changeRecord(call) {
     scope
       ? `Scope as written in the ticket: ${scope.length > MAX_SCOPE ? `${scope.slice(0, MAX_SCOPE)} … [${scope.length - MAX_SCOPE} more characters not shown]` : scope}`
       : "The ticket has no description.",
-    issue.dueDate ? `Valid until ${issue.dueDate}.` : "No valid-until date is set.",
   ];
-  return [{ kind: "change-record", id: issue.identifier, text: lines.join("\n") }];
+  return [
+    { kind: "change-record", id: issue.identifier, text: lines.join("\n") },
+    ...(issue.dueDate ? [{ kind: "change-expiry", id: issue.identifier, text: issue.dueDate }] : []),
+  ];
 }
