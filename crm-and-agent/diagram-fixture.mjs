@@ -29,6 +29,9 @@ export const draft = {
     {
       key: "ai_work",
       meaning: quote("What is the state"),
+      askOnlyWhen: {
+        employees: { gte: 500, quote: quote("A company is qualified") },
+      },
       answers: [
         { value: "in-progress", meaning: quote("In progress:") },
         { value: "planned", meaning: quote("Planned:") },
@@ -56,7 +59,7 @@ export const draft = {
       id: "qualified",
       meaning: quote("A company is qualified"),
       when: {
-        employees: { gte: 500, quote: "at least 500 employees" },
+        employees: { gte: 500, quote: quote("A company is qualified") },
         ai_work: "in-progress",
       },
       outcome: "qualified",
@@ -64,7 +67,10 @@ export const draft = {
     {
       id: "not-in-progress",
       meaning: quote("A company whose AI work"),
-      when: { ai_work: ["planned", "other"] },
+      when: {
+        employees: { gte: 500, quote: quote("A company is qualified") },
+        ai_work: ["planned", "other"],
+      },
       outcome: "not-qualified",
     },
   ],
@@ -102,6 +108,30 @@ export const draft = {
       why: "499 is below the threshold.",
       facts: { employees: 499, ai_work: "in-progress" },
       expect: { outcome: "not-qualified", rule: "too-small" },
+    },
+    {
+      id: "under-without-ai",
+      why: "A known count below 500 decides without AI evidence.",
+      facts: { employees: 499 },
+      expect: { outcome: "not-qualified", rule: "too-small" },
+    },
+    {
+      id: "conflicting-count",
+      why: "Counts on both sides of 500 do not establish rejection.",
+      facts: { employees: { conflict: [499, 500] } },
+      expect: { held: "conflict" },
+    },
+    {
+      id: "missing-count",
+      why: "AI evidence alone does not establish the employee threshold.",
+      facts: { employees: { missing: true }, ai_work: "in-progress" },
+      expect: { held: "missing" },
+    },
+    {
+      id: "missing-ai-at-threshold",
+      why: "At 500 employees, AI evidence is still required.",
+      facts: { employees: 500, ai_work: { missing: true } },
+      expect: { held: "missing" },
     },
   ],
 };

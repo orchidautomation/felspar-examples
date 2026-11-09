@@ -22,3 +22,13 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run test --prefix eve-agent-agentmail
+      # The Python example installs its pinned package on its own, the same way.
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - run: python -m venv .venv && .venv/bin/pip install -r requirements.txt
+        working-directory: no-agent-python
+      - run: .venv/bin/python -m py_compile decide.py
+        working-directory: no-agent-python
+      - run: .venv/bin/python -c "from felspar import Client; from felspar.generated.api.agents import decide_job, describe_job; from felspar.generated.models.decision_input_any_of_variant_0 import DecisionInputAnyOfVariant0"
+        working-directory: no-agent-python

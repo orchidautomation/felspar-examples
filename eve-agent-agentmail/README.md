@@ -31,9 +31,9 @@ agent ─ get_job_decision ─► outcome: billing-team   (lists the output cust
 
 The rules come from the released pack, not from this code: change the policy, release it, and the gate follows. [How the gate works](https://docs.felspar.ai/guides/pre-action-gate).
 
-## Candidate Eve adapter update
+## Durable Eve gate state
 
-This branch's durable-state wiring needs the unreleased SDK update; the proposed minimum is `@felspar/sdk 0.5.0`. The dependency range and lockfile still describe the published `0.4.x` example. Update both in the separate release handoff before merging or distributing this example. Eve remains pinned to `0.71.0`.
+This example requires `@felspar/sdk ^0.4.4`, which includes the durable Eve gate exports. The lockfile installs the published `0.4.4` package. Eve remains pinned to `0.71.0`.
 
 Use the same host-controlled state handle in the hook and approval policy. Keep it private to this tenant and session. Each subagent needs its own decision and output check. Resume local sessions with `eve dev --resume`. Missing usable evidence requires a fresh decision and output check. Do not overwrite the hook's `*` handler.
 
