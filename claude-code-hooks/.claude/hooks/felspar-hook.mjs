@@ -31,7 +31,17 @@ try {
     body: JSON.stringify({ case: call.tool_use_id, shadow: MODE === "shadow", evidence }),
     signal: AbortSignal.timeout(10_000),
   });
-  decision = (await response.json()).decision ?? decision;
+  const body = await response.json();
+  decision = body.decision ?? decision;
+  // An undecided case blocks under the policy's own words for unclear cases;
+  // say which fact couldn't be settled and quote that sentence.
+  const policy = body.result?.nextStep?.text;
+  if (decision.missing?.length && policy && !decision.reason?.includes(policy)) {
+    // Facts that only wait on another one aren't the reason; leave them out.
+    const needs = body.result?.explanation?.needs ?? [];
+    const open = needs.filter((need) => !need.reasons?.includes("activation_unresolved")).map((need) => need.key);
+    decision.reason = `Couldn't settle: ${(open.length ? open : decision.missing).join(", ")}. Policy: "${policy}"`;
+  }
 } catch (error) {
   decision.reason = `No decision (${error.message}).`;
 }
