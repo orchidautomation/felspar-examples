@@ -41,14 +41,27 @@ try {
 } catch (error) {
   decision.reason = `No decision (${error.message}).`;
 }
-// Everything the agent and its person need to act on a block, in the
-// policy's own words: why, what to do now, who it goes to, and the receipt.
-function explained(decision) {
-  const lines = [decision.reason];
-  if (decision.nextStep && !decision.reason.includes(decision.nextStep)) lines.push(`Next: ${decision.nextStep}`);
-  if (decision.escalation?.text) lines.push(`Escalated to: ${decision.escalation.text}`);
-  if (decision.resultId) lines.push(`Receipt: ${decision.resultId}`);
-  return lines.join("\n");
+// Everything the agent and its person need to act on it, one fact per line,
+// in the policy's own words: why, what to do now, who takes it, the receipt.
+function explained(d) {
+  const undecided = !d.rule && d.open?.length > 0;
+  const lines = undecided
+    ? [
+        "Felspar blocked this: it couldn't tell enough to decide.",
+        `Couldn't settle: ${d.open.map((fact) => fact.label).join(", ")}.`,
+        d.nextStep && `Policy: "${d.nextStep}"`,
+        d.toProceed && `To proceed: ${d.toProceed}`,
+      ]
+    : [
+        `Felspar ${d.action === "flag" ? "flagged this for review" : "blocked this"}.`,
+        `Why: ${d.reason}`,
+        d.nextStep && !d.reason.includes(d.nextStep) && `Next: ${d.nextStep}`,
+      ];
+  lines.push(
+    d.escalation?.text && `Hand off to: ${d.escalation.text}`,
+    d.resultId && `Receipt: ${d.rule ? `rule ${d.rule} · ` : ""}${d.receiptUrl ?? d.resultId}`,
+  );
+  return lines.filter(Boolean).join("\n");
 }
 if (process.env.FELSPAR_LOG) {
   try {
@@ -56,6 +69,6 @@ if (process.env.FELSPAR_LOG) {
   } catch {}
 }
 const reply = decision.action === "flag"
-  ? { additionalContext: `Felspar flagged this for review: ${explained(decision)}` }
-  : { permissionDecision: "deny", permissionDecisionReason: `Felspar blocked this: ${explained(decision)}` };
+  ? { additionalContext: explained(decision) }
+  : { permissionDecision: "deny", permissionDecisionReason: explained(decision) };
 if (MODE === "enforce" && decision.action !== "allow") console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: "PreToolUse", ...reply } }));
