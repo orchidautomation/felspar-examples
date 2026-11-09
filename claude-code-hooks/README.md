@@ -11,6 +11,24 @@ npm run db:migrate -- --env production           flag   Felspar flagged this for
 
 The samples are decided by a pack drafted from [`policy.md`](policy.md), a fictional company's engineering policy. Draft yours from your own policy and the hook stays the same.
 
+## What a block says
+
+A block is never just "no". The agent and its person get everything they need to act on it, in the policy's own words:
+
+```text
+Felspar blocked this: Cloud spending changes are blocked: an agent never changes what we spend, even with an approved ticket, because a person makes that change.
+Next: Block for spending: tell the person what you wanted to change and why; the infrastructure owner makes spending changes by hand.
+Escalated to: Infrastructure owner's review: the infrastructure owner makes and reviews every spending change.
+Receipt: result-…
+```
+
+- **Why**: the rule that decided it, or for an undecided call, what Felspar couldn't settle.
+- **Next**: what the policy says to do now.
+- **Escalated to**: who takes it from here, when the policy names someone.
+- **Receipt**: the decision's ID, to look it up later in Felspar.
+
+A flagged call runs, and the agent is told the same things.
+
 ## Files
 
 | File | What it does |
