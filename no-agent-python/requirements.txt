@@ -1,0 +1,2 @@
+# felspar is an alpha: its API may change between releases, so pin the exact version.
+felspar==0.1.0a1
