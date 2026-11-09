@@ -76,6 +76,14 @@ test("label: moving between statuses doesn't withdraw, canceling does", async ()
   const text = await read({ data: { issue: issue({ labels: ["approved"], history: [ev(1, priya, { addedLabels: [{ name: "approved" }] }), ev(2, dana, { toState: st("Canceled", "canceled") })] }) } }, "label:approved");
   assert.match(text, /withdrawn: .* moved it to Canceled/);
 });
+test("status: the approver's own edit merged into the approval entry still counts", async () => {
+  const text = await read({ data: { issue: issue({ history: [ev(1, priya, { toState: st("Approved", "unstarted"), updatedDescription: true })] }) } });
+  assert.match(text, /status: approved\./);
+});
+test("status: an approval step merged away reads as not approved, never approved", async () => {
+  const text = await read({ data: { issue: issue({ history: [ev(1, priya, { fromState: st("Todo", "unstarted"), toState: st("In Progress", "started") })] }) } });
+  assert.match(text, /status: not approved\./);
+});
 test("no such issue: no record", async () => {
   assert.equal(await read({ errors: [{ message: "Entity not found: Issue" }] }), null);
 });

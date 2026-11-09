@@ -55,6 +55,8 @@ Every fact comes from Linear's history, never from text the developer or the age
 - **Withdrawn:** with a status, the issue moved back to backlog, todo, triage or canceled. With a label, the label was removed or the issue was canceled.
 - **Changed after approval:** its description or labels changed after it was approved, so it needs approving again.
 - **Approver unknown:** the issue shows approved, but Linear recorded no one approving it. Linear folds an issue creator's edits in the first minutes after creating it into the creation itself, so approve a ticket after it's been created, not as you create it.
+
+Linear merges one person's changes made close together into a single history entry. If an approver moves an issue to Approved and on to In Progress within a few minutes, the Approved step can vanish from the history, and the hook then reads the issue as not approved. It never errs the other way. If your team moves tickets on quickly, mark approval with a label instead.
 - **Scope:** the title, labels and description. **Valid until:** the issue's due date.
 
 A branch without a ticket key, or a ticket that doesn't exist, sends no record: for a production change, that's no approval. If Linear can't be read, enforce mode blocks the call.

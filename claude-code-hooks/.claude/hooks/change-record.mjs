@@ -24,6 +24,14 @@
 //   - unknown:   the issue is approved now but Linear recorded no one doing it
 //                (Linear folds a creator's first minutes of edits into the
 //                creation). Reported as not approved.
+//
+// Linear also merges one person's changes made close together into a single
+// history entry. An entry that grants approval may therefore include that
+// same person's edits; those are the approver's own, so they don't count as
+// changes after approval. Status mode can lose the approval step entirely when
+// the approver moves the issue on within minutes (Todo → Approved → In
+// Progress is recorded as Todo → In Progress); that reads as not approved,
+// never the reverse. A label doesn't have this problem.
 //   - scope:     the title, labels and description as written.
 //   - valid until: the issue's due date.
 //
