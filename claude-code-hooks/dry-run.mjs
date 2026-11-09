@@ -13,5 +13,6 @@ for (const line of readFileSync(new URL("./samples.jsonl", import.meta.url), "ut
   });
   const out = hook.stdout.trim() ? JSON.parse(hook.stdout).hookSpecificOutput : null;
   const verdict = !out ? "allow" : out.additionalContext ? `flag   ${out.additionalContext}` : `block  ${out.permissionDecisionReason}`;
-  console.log(`${call.tool_input.command.padEnd(48)} ${verdict.replaceAll("\n", " ")}`);
+  const label = call.tool_input.command ?? `${call.tool_name} ${call.tool_input.file_path ?? ""}`.trim();
+  console.log(`${label.padEnd(48)} ${verdict.replaceAll("\n", " ")}`);
 }
