@@ -10,6 +10,10 @@ process.env.FELSPAR_MCP_URL = "https://felspar.invalid/mcp";
 async function gateWith(environment, tag) {
   Object.assign(process.env, environment);
   const { gate } = await import(`../eve-agent-agentmail/agent/lib/felspar-gate.ts?${tag}`);
+  felsparDecisionEvents(gate)["*"](
+    { type: "actions.requested", data: { actions: [] } },
+    { session: { id: "s" } }
+  );
   return gate;
 }
 const company = await gateWith(
@@ -95,19 +99,33 @@ test("the example's hook records Felspar's decisions for the gate", () => {
       context: null,
     },
   });
-  events["actions.requested"]({
-    data: {
-      actions: [
-        { callId: "c1", toolName: "felspar__get_job_decision", input: { entity_id: "HC-1201" } },
-      ],
+  events["*"](
+    {
+      type: "actions.requested",
+      data: {
+        actions: [
+          {
+            callId: "c1",
+            toolName: "felspar__get_job_decision",
+            input: { entity_id: "HC-1201" },
+          },
+        ],
+      },
     },
-  });
-  events["action.result"](
-    { data: { result: { callId: "c1", toolName: "felspar__get_job_decision", output } } },
-    { session }
+    { session },
+  );
+  events["*"](
+    {
+      type: "action.result",
+      data: {
+        status: "completed",
+        result: { callId: "c1", toolName: "felspar__get_job_decision", output },
+      },
+    },
+    { session },
   );
   assert.deepEqual(
     tickets.decisions.decisionsIn("s").map((row) => row.entity),
-    ["HC-1201"]
+    ["HC-1201"],
   );
 });

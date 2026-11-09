@@ -3,9 +3,10 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test": "node scripts/check-shared.mjs && node --test 'tests/*.test.mjs'"
+    "test": "node scripts/check-shared.mjs && node --test 'tests/*.test.mjs'",
+    "test:eve": "node scripts/check-eve-runtime.mjs"
   },
   "devDependencies": {
-    "@felspar/sdk": "^0.4.0"
+    "@felspar/sdk": "^0.4.4"
   }
 }

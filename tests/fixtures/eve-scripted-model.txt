@@ -1,0 +1,31 @@
+function textOf(content: unknown): string {
+  if (typeof content === "string") return content;
+  if (Array.isArray(content)) return content.map((p: any) => (p?.type === "text" ? p.text : "")).join("");
+  return "";
+}
+let n = 0;
+export const scriptModel = new MockLanguageModelV4({
+  doStream: async (opts: any) => { const { prompt } = opts;
+    let start = prompt.length - 1;
+    while (start >= 0 && prompt[start].role !== "user") start -= 1;
+    const command = textOf(prompt[start]?.content).split("Caller message:").at(-1).trim().split(/\s+/)[0] ?? "";
+    const plan = plans[command] ?? [{ text: `unknown: ${command}` }];
+    const toolResults = prompt.slice(start + 1).filter((m: any) => m.role === "tool").length;
+    let step = plan[Math.min(toolResults, plan.length - 1)];
+    if ("tool" in step && step.tool === "eve__tool" && opts.tools?.some((tool: { name: string }) => tool.name === "connection_execute")) {
+      const [connection, tool] = (step.input as { name: string }).name.split("__");
+      step = {tool: "connection_execute", input: {connection, tool, input: (step.input as { input: unknown }).input}};
+    }
+    n += 1;
+    const usage = { inputTokens: { total: 1, noCache: 1, cacheRead: 0, cacheWrite: 0 }, outputTokens: { total: 1, text: 1, reasoning: 0 } };
+    const parts: any[] = [{ type: "stream-start", warnings: [] }];
+    if ("tool" in step) {
+      parts.push({ type: "tool-call", toolCallId: `tc${n}`, toolName: step.tool, input: JSON.stringify(step.input) });
+      parts.push({ type: "finish", usage, finishReason: { unified: "tool-calls", raw: "tool_calls" } });
+    } else {
+      parts.push({ type: "text-start", id: `t${n}` }, { type: "text-delta", id: `t${n}`, delta: step.text }, { type: "text-end", id: `t${n}` });
+      parts.push({ type: "finish", usage, finishReason: { unified: "stop", raw: "stop" } });
+    }
+    return { stream: new ReadableStream({ start(c) { for (const p of parts) c.enqueue(p); c.close(); } }) };
+  },
+});

@@ -30,3 +30,24 @@ agent ─ get_job_decision ─► outcome: billing-team   (lists the output cust
 | `agent/hooks/felspar-decisions.ts` | Records each Felspar decision and output check so the gate can check them |
 
 The rules come from the released pack, not from this code: change the policy, release it, and the gate follows. [How the gate works](https://docs.felspar.ai/guides/pre-action-gate).
+
+## Durable Eve gate state
+
+This example requires `@felspar/sdk ^0.4.4`, which includes the durable Eve gate exports. The lockfile installs the published `0.4.4` package. Eve remains pinned to `0.71.0`.
+
+Use the same host-controlled state handle in the hook and approval policy. Keep it private to this tenant and session. Each subagent needs its own decision and output check. Resume local sessions with `eve dev --resume`. Missing usable evidence requires a fresh decision and output check. Do not overwrite the hook's `*` handler.
+
+Previously saved evidence can remain usable after a recorder error or missed callback only when fresh action-time receipt verification and output-check readback succeed, with the exact text, session, case and tenant credentials still matching. Corrupt or unreadable state, a rejected receipt, an unavailable output check or any mismatch denies the action. Silent hook removal/replacement is not detected: successful verification does not establish that the recorder is still running.
+
+To run the deterministic runtime proof against a candidate SDK, install exact Eve and AI SDK versions in a scratch directory, then run from the repository root:
+
+```sh
+npm install --prefix /tmp/eve-proof --no-audit --no-fund eve@0.71.0 ai@7.0.163
+npm run test:eve -- /tmp/eve-proof /path/to/felspar/packages/sdk/src
+```
+
+The probe uses local mock MCP servers and a scripted model. It checks the action executor count for decisions, output checks, negative cases, child sessions and cold resume. No real inbox or model API is used. Repeat with Eve `0.83.0` or `1.0.0-rc.6` in a separate scratch directory.
+
+Each spawned Eve process explicitly disables CLI telemetry, including after cold restart. It also replaces inherited Node preloads with a guard that rejects non-loopback global `fetch` calls, including incidental gateway metadata requests. These changes affect only the child environment, not machine preferences. Other host configuration and network APIs remain outside the guard; this is not a general network sandbox.
+
+The example's own `npm test` runs this proof using its installed Eve and SDK. The existing SDK examples check invokes that script, and this repository's CI runs it after installation.

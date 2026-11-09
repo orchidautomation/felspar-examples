@@ -7,11 +7,12 @@
     "node": ">=24.15.0"
   },
   "scripts": {
+    "test": "node ../scripts/check-eve-runtime.mjs . node_modules/@felspar/sdk/dist",
     "dev": "eve dev --no-default-extensions",
     "serve": "eve dev --no-ui --no-default-extensions --port 2000"
   },
   "dependencies": {
-    "@felspar/sdk": "^0.4.0",
+    "@felspar/sdk": "^0.4.4",
     "eve": "0.71.0"
   }
 }
