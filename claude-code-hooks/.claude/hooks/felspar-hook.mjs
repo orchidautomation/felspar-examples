@@ -33,24 +33,42 @@ try {
   });
   const body = await response.json();
   decision = body.decision ?? decision;
-  // An undecided case blocks under the policy's own words for unclear cases;
-  // say which fact couldn't be settled and quote that sentence.
-  const policy = body.result?.nextStep?.text;
-  if (decision.missing?.length && policy && !decision.reason?.includes(policy)) {
-    // Facts that only wait on another one aren't the reason; leave them out.
-    const needs = body.result?.explanation?.needs ?? [];
-    const open = needs.filter((need) => !need.reasons?.includes("activation_unresolved")).map((need) => need.key);
-    decision.reason = `Couldn't settle: ${(open.length ? open : decision.missing).join(", ")}. Policy: "${policy}"`;
-  }
+  // Older APIs don't send the next step or receipt beside the decision; read
+  // them from the result instead.
+  decision.nextStep ??= body.result?.nextStep?.text ?? null;
+  decision.resultId ??= body.result?.resultId ?? null;
+  if (decision.escalation && !decision.escalation.text) decision.escalation.text = body.result?.escalation?.why?.text ?? null;
 } catch (error) {
   decision.reason = `No decision (${error.message}).`;
 }
+// Everything the agent and its person need to act on it, one fact per line,
+// in the policy's own words: why, what to do now, who takes it, the receipt.
+function explained(d) {
+  const undecided = !d.rule && d.open?.length > 0;
+  const lines = undecided
+    ? [
+        "Felspar blocked this: it couldn't tell enough to decide.",
+        `Couldn't settle: ${d.open.map((fact) => fact.label).join(", ")}.`,
+        d.nextStep && `Policy: "${d.nextStep}"`,
+        d.toProceed && `To proceed: ${d.toProceed}`,
+      ]
+    : [
+        `Felspar ${d.action === "flag" ? "flagged this for review" : "blocked this"}.`,
+        `Why: ${d.reason}`,
+        d.nextStep && !d.reason.includes(d.nextStep) && `Next: ${d.nextStep}`,
+      ];
+  lines.push(
+    d.escalation?.text && `Hand off to: ${d.escalation.text}`,
+    d.resultId && `Receipt: ${d.rule ? `rule ${d.rule} · ` : ""}${d.receiptUrl ?? d.resultId}`,
+  );
+  return lines.filter(Boolean).join("\n");
+}
 if (process.env.FELSPAR_LOG) {
   try {
-    appendFileSync(process.env.FELSPAR_LOG, `${JSON.stringify({ at: new Date().toISOString(), mode: MODE, case: call.tool_use_id, tool: call.tool_name, action: decision.action, reason: decision.reason })}\n`);
+    appendFileSync(process.env.FELSPAR_LOG, `${JSON.stringify({ at: new Date().toISOString(), mode: MODE, case: call.tool_use_id, tool: call.tool_name, action: decision.action, reason: decision.reason, nextStep: decision.nextStep, escalation: decision.escalation?.id, receipt: decision.resultId })}\n`);
   } catch {}
 }
 const reply = decision.action === "flag"
-  ? { additionalContext: `Felspar flagged this for review: ${decision.reason}` }
-  : { permissionDecision: "deny", permissionDecisionReason: `Felspar blocked this: ${decision.reason}` };
+  ? { additionalContext: explained(decision) }
+  : { permissionDecision: "deny", permissionDecisionReason: explained(decision) };
 if (MODE === "enforce" && decision.action !== "allow") console.log(JSON.stringify({ hookSpecificOutput: { hookEventName: "PreToolUse", ...reply } }));

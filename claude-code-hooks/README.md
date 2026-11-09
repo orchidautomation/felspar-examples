@@ -11,6 +11,35 @@ npm run db:migrate -- --env production           flag   Felspar flagged this for
 
 The samples are decided by a pack drafted from [`policy.md`](policy.md), a fictional company's engineering policy. Draft yours from your own policy and the hook stays the same.
 
+## What a block says
+
+A block is never just "no". The agent and its person get one fact per line, in the policy's own words:
+
+```text
+Felspar blocked this.
+Why: Cloud spending changes are blocked: an agent never changes what we spend, even with an approved ticket, because a person makes that change.
+Next: Don't retry or work around it. Tell the user what you wanted to change and why; a person makes this change.
+Hand off to: Infrastructure owner's review: the infrastructure owner makes and reviews every spending change.
+Receipt: rule spend-blocked · https://app.felspar.ai/owner/runs/result-…
+```
+
+When Felspar couldn't decide, it says what it couldn't settle, quotes what the policy says to do then, and says what would settle it:
+
+```text
+Felspar blocked this: it couldn't tell enough to decide.
+Couldn't settle: what the action is.
+Policy: "If it is unclear what an action does or where it lands, or the evidence can't settle it, block it. To proceed, keep the command inside the repository, or ask the user to run it themselves."
+To proceed: Send evidence that shows what the action is plainly, or ask a person to decide.
+Receipt: https://app.felspar.ai/owner/runs/result-…
+```
+
+- **Why**: the rule that decided it.
+- **Next**: what the policy says to do now.
+- **Hand off to**: who takes it from here, when the policy names someone. Felspar doesn't send it anywhere; the agent tells its person.
+- **Receipt**: the rule and the decision's page in Felspar.
+
+A flagged call runs, and the agent is told the same things.
+
 ## Files
 
 | File | What it does |
