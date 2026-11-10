@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `vercel`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) vercel $*" >> "$(dirname "$0")/../markers/vercel"
+echo "[stand-in] vercel $* (marker written, nothing else happened)"

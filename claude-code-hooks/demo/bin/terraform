@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `terraform`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) terraform $*" >> "$(dirname "$0")/../markers/terraform"
+echo "[stand-in] terraform $* (marker written, nothing else happened)"

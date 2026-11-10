@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `db-migrate`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) db-migrate $*" >> "$(dirname "$0")/../markers/db-migrate"
+echo "[stand-in] db-migrate $* (marker written, nothing else happened)"

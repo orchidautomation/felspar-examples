@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const repo = mkdtempSync(join(tmpdir(), "felspar-linear-"));
-execFileSync("git", ["init", "-q", "-b", "TDW-412-fix-billing-sync", repo]);
+execFileSync("git", ["init", "-q", "-b", "KC-412-fix-billing-sync", repo]);
 execFileSync("git", ["-C", repo, "-c", "user.name=t", "-c", "user.email=t@example.com", "commit", "-q", "--allow-empty", "-m", "init"]);
 process.env.LINEAR_API_KEY = "test";
 
@@ -16,7 +16,7 @@ const priya = { name: "Priya Shah", email: "priya@example.com" };
 const at = (minute) => `2026-11-09T10:${String(minute).padStart(2, "0")}:00.000Z`;
 const st = (name, type) => ({ name, type });
 function issue({ state = st("In Progress", "started"), labels = ["production"], history = [], dueDate = "2026-12-31" } = {}) {
-  return { identifier: "TDW-412", title: "Billing migration", description: "Production migration of billing-db.", dueDate,
+  return { identifier: "KC-412", title: "Billing migration", description: "Production migration of billing-db.", dueDate,
     state, creator: dana, labels: { nodes: labels.map((name) => ({ name })) }, history: { nodes: history } };
 }
 const ev = (minute, actor, extra) => ({ createdAt: at(minute), actor, fromState: null, toState: null, updatedDescription: false, addedLabels: [], removedLabels: [], ...extra });
@@ -37,7 +37,7 @@ test("status: approved by someone else, then moved forward", async () => {
   assert.match(text, /status: approved\./);
   assert.match(text, /Requested by Dana Lee/);
   assert.match(text, /Approved by Priya Shah .* by moving the issue to Approved/);
-  assert.deepEqual(last[1], { kind: "change-expiry", id: "TDW-412", text: "2026-12-31" });
+  assert.deepEqual(last[1], { kind: "change-expiry", id: "KC-412", text: "2026-12-31" });
   assert.doesNotMatch(text, /2026-12-31/);
 });
 test("status: self-approval is reported as such, for the policy to judge", async () => {

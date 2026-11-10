@@ -15,6 +15,6 @@ Each folder is a complete project. Copy one, install it (`npm install`, or `pip 
 
 You need Node.js 24.15 or later (Python 3.11 or later for `no-agent-python`) and a Felspar agent key: in [Felspar](https://app.felspar.ai) → Workspace → Company agents, register an agent for a released job and create its key. The Eve examples also need a model: a [Vercel AI Gateway](https://vercel.com/ai-gateway) key, or a ChatGPT subscription through `/login`.
 
-The samples come from fictional companies: Harbor Cloud's support-ticket routing, Kestrel Analytics' sales qualification and Tidewater Freight's coding-agent policy. Nothing else is job-specific: the agents learn what each job needs from Felspar.
+The samples come from fictional companies: Harbor Cloud's support-ticket routing, Kestrel Analytics' sales qualification and Kettle Creek Software's coding agent policy. Nothing else is job-specific: the agents learn what each job needs from Felspar.
 
 Docs: [docs.felspar.ai](https://docs.felspar.ai) · SDKs: [`@felspar/sdk`](https://www.npmjs.com/package/@felspar/sdk), [`felspar`](https://pypi.org/project/felspar/) (alpha) · License: Apache-2.0

@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `gh`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) gh $*" >> "$(dirname "$0")/../markers/gh"
+echo "[stand-in] gh $* (marker written, nothing else happened)"

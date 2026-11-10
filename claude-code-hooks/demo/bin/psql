@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `psql`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) psql $*" >> "$(dirname "$0")/../markers/psql"
+echo "[stand-in] psql $* (marker written, nothing else happened)"
