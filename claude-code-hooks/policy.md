@@ -104,9 +104,9 @@ Edge case: an action that targets both staging and production counts as a produc
 
 A cloud read is an action that only reads from a cloud account or production infrastructure without changing it.
 
-Examples: aws ec2 describe-instances, kubectl get pods --context prod, terraform plan -out plan.tfplan, aws ce get-cost-and-usage for last month, check last month's aws bill
+Examples: aws ec2 describe-instances, kubectl get pods --context prod, terraform plan -out plan.tfplan, aws ce get-cost-and-usage for last month, aws ce get-cost-and-usage with the UnblendedCost metric, check last month's aws bill
 
-It includes reading logs from any environment, such as kubectl logs in prod, and reading costs and usage.
+It includes reading logs from any environment, such as kubectl logs in prod, and reading costs and usage with any cost metric, such as UnblendedCost, BlendedCost or AmortizedCost.
 
 It doesn't include reading production data, which is a production change, or reading secrets.
 

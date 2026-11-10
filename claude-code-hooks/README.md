@@ -15,9 +15,11 @@ aws budgets update-budget …                      block  Felspar blocked this.
                                                         Receipt: rule spend-blocked · https://app.felspar.ai/owner/runs/result-…
 rm -rf ~/projects                                block  Felspar blocked this.
                                                         Why: Destructive changes are blocked, because they can't be undone.
-npm run db:migrate -- --env production           block  Felspar blocked this: it couldn't tell enough to decide.
-                                                        Couldn't settle: what the approval is.
-                                                        To proceed: Send change-record evidence that shows what the approval is.
+npm run db:migrate -- --env production           block  Felspar blocked this.
+                                                        Why: A production change without an approved Linear ticket is blocked: …
+                                                        Next: Don't retry or work around it. Ask the user to get the Linear ticket for this change approved by the engineering lead, with production in its labels and a due date, then try again.
+                                                        Hand off to: Change approval: the engineering lead approves production changes in Linear.
+                                                        Receipt: rule no-approval · https://app.felspar.ai/owner/runs/result-…
 ```
 
 The samples are decided by a pack drafted from [`policy.md`](policy.md), Kettle Creek Software's coding agent policy (a fictional company). Draft yours from your own policy and the hook stays the same. To walk someone through it live, follow [`DEMO.md`](DEMO.md).
@@ -100,7 +102,7 @@ Every fact comes from Linear's history, never from text the developer or the age
 Linear merges one person's changes made close together into a single history entry. If an approver moves an issue to Approved and on to In Progress within a few minutes, the Approved step can vanish from the history, and the hook then reads the issue as not approved. It never errs the other way. If your team moves tickets on quickly, mark approval with a label instead.
 - **Scope:** the title, labels and description. **Valid until:** the issue's due date, sent on its own as `change-expiry`, so it's read as a date and nothing else.
 
-A branch without a ticket key, or a ticket that doesn't exist, sends no record: for a production change, that's no approval. If Linear can't be read, enforce mode blocks the call.
+A branch without a ticket key, or a ticket that doesn't exist, sends a record saying no change record was found: for a production change, that's no approval, and the block names the approval rule. If Linear can't be read, enforce mode blocks the call.
 
 To read approvals from Jira, GitHub or another system instead, replace `change-record.mjs` with a function that returns the record in words: see [look up the approval](https://docs.felspar.ai/integrations/coding-agent-hooks#look-up-the-approval).
 
