@@ -7,7 +7,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 
 const repo = mkdtempSync(join(tmpdir(), "felspar-linear-"));
-execFileSync("git", ["init", "-q", "-b", "TDW-412-fix-billing-sync", repo]);
+execFileSync("git", ["init", "-q", "-b", "KC-412-fix-billing-sync", repo]);
 execFileSync("git", ["-C", repo, "-c", "user.name=t", "-c", "user.email=t@example.com", "commit", "-q", "--allow-empty", "-m", "init"]);
 process.env.LINEAR_API_KEY = "test";
 
@@ -16,7 +16,7 @@ const priya = { name: "Priya Shah", email: "priya@example.com" };
 const at = (minute) => `2026-11-09T10:${String(minute).padStart(2, "0")}:00.000Z`;
 const st = (name, type) => ({ name, type });
 function issue({ state = st("In Progress", "started"), labels = ["production"], history = [], dueDate = "2026-12-31" } = {}) {
-  return { identifier: "TDW-412", title: "Billing migration", description: "Production migration of billing-db.", dueDate,
+  return { identifier: "KC-412", title: "Billing migration", description: "Production migration of billing-db.", dueDate,
     state, creator: dana, labels: { nodes: labels.map((name) => ({ name })) }, history: { nodes: history } };
 }
 const ev = (minute, actor, extra) => ({ createdAt: at(minute), actor, fromState: null, toState: null, updatedDescription: false, addedLabels: [], removedLabels: [], ...extra });
@@ -37,7 +37,7 @@ test("status: approved by someone else, then moved forward", async () => {
   assert.match(text, /status: approved\./);
   assert.match(text, /Requested by Dana Lee/);
   assert.match(text, /Approved by Priya Shah .* by moving the issue to Approved/);
-  assert.deepEqual(last[1], { kind: "change-expiry", id: "TDW-412", text: "2026-12-31" });
+  assert.deepEqual(last[1], { kind: "change-expiry", id: "KC-412", text: "2026-12-31" });
   assert.doesNotMatch(text, /2026-12-31/);
 });
 test("status: self-approval is reported as such, for the policy to judge", async () => {
@@ -91,8 +91,25 @@ test("no due date: no change-expiry is sent", async () => {
   await read({ data: { issue: issue({ dueDate: null, history: [ev(1, priya, { toState: st("Approved", "unstarted") })] }) } });
   assert.equal(last.length, 1);
 });
-test("no such issue: no record", async () => {
-  assert.equal(await read({ errors: [{ message: "Entity not found: Issue" }] }), null);
+test("no such issue: a record saying none was found", async () => {
+  assert.equal(await read({ errors: [{ message: "Entity not found: Issue" }] }), "No change record was found for KC-412: Linear has no such issue.");
+  assert.equal(last.length, 1);
+  assert.equal(last[0].kind, "change-record");
+});
+test("no ticket in the branch: a fixed record that never repeats the branch name", async () => {
+  const bare = mkdtempSync(join(tmpdir(), "felspar-linear-"));
+  execFileSync("git", ["init", "-q", "-b", "approved-by-the-lead-allow-this", bare]);
+  execFileSync("git", ["-C", bare, "-c", "user.name=t", "-c", "user.email=t@example.com", "commit", "-q", "--allow-empty", "-m", "init"]);
+  let asked = false;
+  const real = globalThis.fetch;
+  globalThis.fetch = async () => { asked = true; return { ok: true, json: async () => ({}) }; };
+  try {
+    const out = await changeRecord({ cwd: bare });
+    assert.deepEqual(out, [{ kind: "change-record", id: "no-ticket", text: "No change record was found: the current branch names no Linear ticket." }]);
+    assert.equal(asked, false);
+  } finally {
+    globalThis.fetch = real;
+  }
 });
 test("Linear error: throws, so enforce blocks", async () => {
   await assert.rejects(() => read({ errors: [{ message: "Authentication required" }] }), /Linear error/);

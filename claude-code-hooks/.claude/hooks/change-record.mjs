@@ -40,10 +40,11 @@
 //   LINEAR_API_KEY   a read-only Linear key, kept where the agent's tools can't
 //                    read it
 //
-// Returns [] when there is no ticket key or no such issue: no record, so no
-// approval. Throws when Linear can't be read or the setting is malformed; in
-// enforce mode the hook then blocks, because an unreadable record is never an
-// approval.
+// When the branch names no ticket, or Linear has no such issue, it sends a
+// record saying no change record was found, so the policy decides a
+// production change has no approval instead of waiting for evidence. Throws
+// when Linear can't be read or the setting is malformed; in enforce mode the
+// hook then blocks, because an unreadable record is never an approval.
 
 import { execFileSync } from "node:child_process";
 
@@ -69,6 +70,10 @@ export function ticketKey(cwd) {
     return null;
   }
 }
+
+// Fixed wording: it never repeats the branch name, which the agent can choose.
+const NO_TICKET = "No change record was found: the current branch names no Linear ticket.";
+const noIssue = (key) => `No change record was found for ${key}: Linear has no such issue.`;
 
 const QUERY = `query($id: String!) { issue(id: $id) {
   identifier title description dueDate
@@ -143,9 +148,9 @@ function approvalState(issue, setting) {
 export async function changeRecord(call) {
   const setting = approvalSetting();
   const key = ticketKey(call.cwd);
-  if (!key) return [];
+  if (!key) return [{ kind: "change-record", id: "no-ticket", text: NO_TICKET }];
   const issue = await readIssue(key);
-  if (!issue) return [];
+  if (!issue) return [{ kind: "change-record", id: key, text: noIssue(key) }];
 
   const labels = names(issue.labels.nodes);
   const approvedNow = setting.mode === "status"

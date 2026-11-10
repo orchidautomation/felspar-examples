@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `aws`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) aws $*" >> "$(dirname "$0")/../markers/aws"
+echo "[stand-in] aws $* (marker written, nothing else happened)"

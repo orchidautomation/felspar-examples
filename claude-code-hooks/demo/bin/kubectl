@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# Harmless stand-in for `kubectl`: records that it ran in demo/markers/ and does nothing else.
+mkdir -p "$(dirname "$0")/../markers"
+echo "$(date -u +%H:%M:%S) kubectl $*" >> "$(dirname "$0")/../markers/kubectl"
+echo "[stand-in] kubectl $* (marker written, nothing else happened)"
