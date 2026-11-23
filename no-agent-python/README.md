@@ -2,7 +2,7 @@
 
 The [`no-agent`](../no-agent) example in Python: one script, one support ticket in, the company's decision out. Nothing on your side runs a model: any system that has the facts, such as a help desk, a CRM workflow or a scheduled job, can call Felspar the same way.
 
-It uses [`felspar`](https://pypi.org/project/felspar/) 0.1.0a1, the Python package. It is an **alpha**: its API, including the generated model names, may change between releases, so `requirements.txt` pins the exact version.
+It uses [`felspar`](https://pypi.org/project/felspar/) 0.1.0a3, the Python package. It is an **alpha**: its API, including the generated model names, may change between releases, so `requirements.txt` pins the exact version.
 
 It prints the same lines as `no-agent`:
 
