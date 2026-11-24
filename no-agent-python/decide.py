@@ -7,8 +7,8 @@ from datetime import datetime, timezone
 
 from felspar import Client
 from felspar.generated.api.agents import decide_job, describe_job
-from felspar.generated.models.decision_input_any_of_variant_0 import (
-    DecisionInputAnyOfVariant0 as FactsRequest,
+from felspar.generated.models.decision_input_facts import (
+    DecisionInputFacts as FactsRequest,
 )
 
 job = "support-ticket-routing"
