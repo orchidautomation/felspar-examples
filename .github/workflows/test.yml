@@ -31,5 +31,5 @@ jobs:
         working-directory: no-agent-python
       - run: .venv/bin/python -m py_compile decide.py
         working-directory: no-agent-python
-      - run: .venv/bin/python -c "from felspar import Client; from felspar.generated.api.agents import decide_job, describe_job; from felspar.generated.models.decision_input_any_of_variant_0 import DecisionInputAnyOfVariant0"
+      - run: .venv/bin/python -c "from felspar import Client; from felspar.generated.api.agents import decide_job, describe_job; from felspar.generated.models.decision_input_facts import DecisionInputFacts"
         working-directory: no-agent-python
