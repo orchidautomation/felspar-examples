@@ -1,0 +1,16 @@
+{
+  "name": "felspar-eve-device-review",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.15.0"
+  },
+  "scripts": {
+    "dev": "eve dev --no-default-extensions"
+  },
+  "dependencies": {
+    "@felspar/sdk": "^0.8.0",
+    "eve": "0.71.0"
+  }
+}
