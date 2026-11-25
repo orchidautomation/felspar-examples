@@ -23,6 +23,7 @@ jobs:
       - run: npm test
       - run: npm run test --prefix eve-agent-agentmail
       - run: npm test --prefix claude-code-hooks
+      - run: npm test --prefix eve-device-review
       # The Python example installs its pinned package on its own, the same way.
       - uses: actions/setup-python@v5
         with:

@@ -35,10 +35,12 @@ The rubric itself isn't in the code. It lives in the company's Google Doc and th
 | `send_to_scoring` | `scoring` |
 | `send_to_safety_review` | `safety-review` |
 | `send_to_price_review` | `price-review` |
-| `send_to_analyst` | `analyst-review` |
+| `send_to_analyst` | `analyst-review`, or Felspar held the device and its next step is analyst review |
 | `recommend_clinical_trial` | `clinical-trial`, and the `note` is exactly the text `check_output` passed |
 
 A "do not recommend" outcome has no action here: it goes to a person first.
+
+A hold is not a decision, so no other action runs on a held device. The gate reads only Felspar's own replies, recorded by the host, never the model's text.
 
 ## One lesson from the run
 
