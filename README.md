@@ -8,6 +8,7 @@ Each folder is a complete project. Copy one, install it (`npm install`, or `pip 
 | --- | --- |
 | [`eve-agent`](eve-agent) | An [Eve](https://github.com/vercel/eve) agent that gathers the evidence and asks Felspar for the decision instead of making its own. |
 | [`eve-agent-agentmail`](eve-agent-agentmail) | The same agent with an email inbox. Every draft passes Felspar's action gate: only for a decided case, only what the decision allows, only text Felspar checked. |
+| [`eve-device-review`](eve-device-review) | A device-review research agent, to read: Felspar answers the rubric from the records, and every review action passes the action gate. |
 | [`no-agent`](no-agent) | One script, no agent: a ticket's facts in, the decision and its receipt out. |
 | [`no-agent-python`](no-agent-python) | The same script in Python, with the alpha [`felspar`](https://pypi.org/project/felspar/) package. |
 | [`crm-and-agent`](crm-and-agent) | A CRM workflow and an agent qualify the same companies from one sales policy, and get the same decisions. |
@@ -15,6 +16,6 @@ Each folder is a complete project. Copy one, install it (`npm install`, or `pip 
 
 You need Node.js 24.15 or later (Python 3.11 or later for `no-agent-python`) and a Felspar agent key: in [Felspar](https://app.felspar.ai) → Workspace → Company agents, register an agent for a released job and create its key. The Eve examples also need a model: a [Vercel AI Gateway](https://vercel.com/ai-gateway) key, or a ChatGPT subscription through `/login`.
 
-The samples come from fictional companies: Harbor Cloud's support-ticket routing, Kestrel Analytics' sales qualification and Kettle Creek Software's coding agent policy. Nothing else is job-specific: the agents learn what each job needs from Felspar.
+The samples come from fictional companies: Harbor Cloud's support-ticket routing, Meridell Device Review's device rubric, Kestrel Analytics' sales qualification and Kettle Creek Software's coding agent policy. Nothing else is job-specific: the agents learn what each job needs from Felspar.
 
 Docs: [docs.felspar.ai](https://docs.felspar.ai) · SDKs: [`@felspar/sdk`](https://www.npmjs.com/package/@felspar/sdk), [`felspar`](https://pypi.org/project/felspar/) (alpha) · License: Apache-2.0
